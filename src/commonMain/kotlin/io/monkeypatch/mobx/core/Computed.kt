@@ -3,7 +3,6 @@ package io.monkeypatch.mobx.core
 class Computed<T>(
     context: ReactiveContext = ReactiveContext.main,
     name: String = context.nameFor("Computed"),
-    private val isEqual: EqualityComparer<T?>? = null,
     private val fn: () -> T
 ) : Atom(
     context, name
@@ -87,43 +86,11 @@ class Computed<T>(
         val wasSuspended = dependenciesState == DerivationState.NOT_TRACKING
         val newValue = computeValue(true)
 
-        val changed = wasSuspended || context.hasCaughtException(this) ||
-            !isEqualHelper(oldValue, newValue)
+        val changed = wasSuspended || context.hasCaughtException(this) || oldValue != newValue
 
         if (changed) {
             _value = newValue
         }
         return changed
     }
-
-    private fun isEqualHelper(x: T?, y: T?) =
-        isEqual?.let { it(x, y) } ?: x == y
-
-
-    //TODO observe ?
-
-//     Function observe(void Function(ChangeNotification<T>) handler,
-//       {@deprecated bool fireImmediately}) {
-//     T prevValue;
-
-//     void notifyChange() {
-//       _context.untracked(() {
-//         handler(ChangeNotification(
-//             type: OperationType.update,
-//             object: this,
-//             oldValue: prevValue,
-//             newValue: value));
-//       });
-//     }
-
-//     return autorun((_) {
-//       final newValue = value;
-
-//       notifyChange();
-
-//       prevValue = newValue;
-//     }, context: _context);
-//   }
-
-
 }

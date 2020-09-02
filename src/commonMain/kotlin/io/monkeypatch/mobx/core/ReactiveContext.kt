@@ -1,5 +1,6 @@
 package io.monkeypatch.mobx.core
 
+import io.monkeypatch.mobx.utils.isMainThread
 import kotlin.native.concurrent.ThreadLocal
 import kotlin.properties.Delegates
 
@@ -122,7 +123,9 @@ class ReactiveContext(config: ReactiveConfig = ReactiveConfig.main) {
         require(
             (run {
                 when (config.readPoliciy) {
-                    ReactiveReadPolicy.ALWAYS -> Unit //TODO //assert(state.isWithinBatch || state.isWithinDerivation) { "'Observable values cannot be read outside Actions and Reactions. Make sure to wrap them inside an action or a reaction. Tried to read: ${atom.name}" }
+                    ReactiveReadPolicy.ALWAYS -> require(state.isWithinBatch || state.isWithinDerivation) {
+                        "'Observable values cannot be read outside Actions and Reactions. Make sure to wrap them inside an action or a reaction. Tried to read: ${atom.name}"
+                    }
                     ReactiveReadPolicy.NEVER -> Unit
                 }
                 true
@@ -132,7 +135,9 @@ class ReactiveContext(config: ReactiveConfig = ReactiveConfig.main) {
 
     // TODO
     fun enforceWritePolicy(atom: Atom) {
-
+        require(isMainThread()) {
+            "Observable values cannot be written outside main thread"
+        }
     }
 
     internal fun startTracking(derivation: Derivation): Derivation? {
