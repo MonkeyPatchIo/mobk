@@ -1,4 +1,4 @@
-package io.monkeypatch.mobx.api
+package io.monkeypatch.mobk.api
 
 import kotlin.test.Test
 

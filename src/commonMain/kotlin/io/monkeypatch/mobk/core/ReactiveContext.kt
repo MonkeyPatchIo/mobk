@@ -1,6 +1,6 @@
-package io.monkeypatch.mobx.core
+package io.monkeypatch.mobk.core
 
-import io.monkeypatch.mobx.utils.isMainThread
+import io.monkeypatch.mobk.utils.isMainThread
 import kotlin.native.concurrent.ThreadLocal
 import kotlin.properties.Delegates
 
@@ -57,7 +57,7 @@ enum class ReactiveReadPolicy {
 data class ReactiveConfig(
     val disableErrorBoundaries: Boolean,
     val writePolicy: ReactiveWritePolicy,
-    val readPoliciy: ReactiveReadPolicy,
+    val readPolicy: ReactiveReadPolicy,
     val maxIterations: Int = 100
 ) {
     internal val reactionErrorHandlers: MutableSet<ReactionErrorHandler> = mutableSetOf()
@@ -66,7 +66,7 @@ data class ReactiveConfig(
         val main = ReactiveConfig(
             disableErrorBoundaries = false,
             writePolicy = ReactiveWritePolicy.OBSERVED,
-            readPoliciy = ReactiveReadPolicy.NEVER
+            readPolicy = ReactiveReadPolicy.NEVER
         )
     }
 }
@@ -122,7 +122,7 @@ class ReactiveContext(config: ReactiveConfig = ReactiveConfig.main) {
     fun enforceReadPolicy(atom: Atom) {
         require(
             (run {
-                when (config.readPoliciy) {
+                when (config.readPolicy) {
                     ReactiveReadPolicy.ALWAYS -> require(state.isWithinBatch || state.isWithinDerivation) {
                         "'Observable values cannot be read outside Actions and Reactions. Make sure to wrap them inside an action or a reaction. Tried to read: ${atom.name}"
                     }

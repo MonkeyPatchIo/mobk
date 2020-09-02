@@ -1,4 +1,4 @@
-package io.monkeypatch.mobx.core
+package io.monkeypatch.mobk.core
 
 /// An Exception class to capture MobX specific exceptions
 sealed class MobXException(message: String): Exception(message) {

@@ -1,4 +1,4 @@
-package io.monkeypatch.mobx.core
+package io.monkeypatch.mobk.core
 
 typealias ReactionErrorHandler = (error: Throwable, reaction: Reaction) -> Unit
 

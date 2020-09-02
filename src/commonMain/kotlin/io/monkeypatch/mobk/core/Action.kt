@@ -1,4 +1,4 @@
-package io.monkeypatch.mobx.core
+package io.monkeypatch.mobk.core
 
 class Action(
     private val body: () -> Unit,

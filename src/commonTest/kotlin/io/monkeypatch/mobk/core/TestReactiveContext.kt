@@ -1,4 +1,4 @@
-package io.monkeypatch.mobx.core
+package io.monkeypatch.mobk.core
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

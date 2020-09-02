@@ -1,4 +1,4 @@
-package io.monkeypatch.mobx.core
+package io.monkeypatch.mobk.core
 
 data class ReactionDisposer(private val reaction: Reaction) {
     operator fun invoke() {

@@ -1,12 +1,12 @@
-package io.monkeypatch.mobx.api
+package io.monkeypatch.mobk.api
 
-import io.monkeypatch.mobx.core.*
+import io.monkeypatch.mobk.core.*
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 
-public fun autorun(body: () -> Unit): ReactionDisposer =
+fun autorun(body: () -> Unit): ReactionDisposer =
     createAutorun { body() }
 
 fun action(body: () -> Unit) {
