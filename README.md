@@ -18,7 +18,7 @@ repositories {
 }
 ```
 
-Add mobx as an api dependency to your commonMain dependencies :
+Add mobk as an api dependency to your commonMain dependencies :
 
 ``` gradle
 
