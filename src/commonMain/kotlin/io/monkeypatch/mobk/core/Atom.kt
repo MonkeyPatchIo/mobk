@@ -1,13 +1,13 @@
 package io.monkeypatch.mobk.core
 
 
-enum class ListenerKind {
+internal enum class ListenerKind {
     ON_BECOME_OBSERVED, ON_BECOME_UNOBSERVED
 }
 
-open class Atom(
+public open class Atom(
     protected val context: ReactiveContext = ReactiveContext.main,
-    val name: String = context.nameFor("Atom"),
+    public val name: String = context.nameFor("Atom"),
     onObserved: (() -> Unit)? = null,
     onUnobserved: (() -> Unit)? = null
 ) {
@@ -18,7 +18,7 @@ open class Atom(
 
     private val observationListeners = mutableMapOf<ListenerKind, MutableSet<() -> Unit>>()
 
-    val hasObservers get() = observers.isNotEmpty()
+    public val hasObservers: Boolean get() = observers.isNotEmpty()
 
     init {
         if (onObserved != null) {
@@ -30,11 +30,11 @@ open class Atom(
         }
     }
 
-    fun reportObserved() {
+    internal fun reportObserved() {
         context.reportObserved(this)
     }
 
-    fun reportChanged() {
+    internal fun reportChanged() {
         context.apply {
             startBatch()
             propagateChanged(this@Atom)

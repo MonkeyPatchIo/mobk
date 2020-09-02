@@ -46,26 +46,27 @@ private class ReactiveState {
 
 /// CONFIG
 
-enum class ReactiveWritePolicy {
+public enum class ReactiveWritePolicy {
     OBSERVED, ALWAYS, NEVER
 }
 
-enum class ReactiveReadPolicy {
+public enum class ReactiveReadPolicy {
     ALWAYS, NEVER
 }
 
-data class ReactiveConfig(
+public data class ReactiveConfig(
     val disableErrorBoundaries: Boolean,
     val writePolicy: ReactiveWritePolicy,
     val readPolicy: ReactiveReadPolicy,
-    val maxIterations: Int = 100
+    val maxIterations: Int = 100,
+    val enforceWriteOnMainThread: Boolean = true
 ) {
     internal val reactionErrorHandlers: MutableSet<ReactionErrorHandler> = mutableSetOf()
 
-    companion object {
-        val main = ReactiveConfig(
+    public companion object {
+        public val main: ReactiveConfig = ReactiveConfig(
             disableErrorBoundaries = false,
-            writePolicy = ReactiveWritePolicy.OBSERVED,
+            writePolicy = ReactiveWritePolicy.NEVER,
             readPolicy = ReactiveReadPolicy.NEVER
         )
     }
@@ -73,24 +74,24 @@ data class ReactiveConfig(
 
 /// CONTEXT
 
-class ReactiveContext(config: ReactiveConfig = ReactiveConfig.main) {
+public class ReactiveContext(config: ReactiveConfig = ReactiveConfig.main) {
     private var state = ReactiveState()
 
-    var config: ReactiveConfig by Delegates.observable(config) { _, _, newConfig ->
+    public var config: ReactiveConfig by Delegates.observable(config) { _, _, newConfig ->
         state.allowStateChanges = newConfig.writePolicy == ReactiveWritePolicy.NEVER
     }
 
-    fun nameFor(prefix: String): String {
+    internal fun nameFor(prefix: String): String {
         require(prefix.isNotEmpty()) { "Prefix should not be empty " }
         val nextId = ++state.nextIdCounter
         return "$prefix@$nextId"
     }
 
-    fun startBatch() {
+    internal fun startBatch() {
         state.batch += 1
     }
 
-    fun endBatch() {
+    internal fun endBatch() {
         state.batch -= 1
         if (state.batch == 0) {
             runReactions()
@@ -117,9 +118,9 @@ class ReactiveContext(config: ReactiveConfig = ReactiveConfig.main) {
         }
     }
 
-    val isWithinBatch get() = state.isWithinBatch
+    internal val isWithinBatch get() = state.isWithinBatch
 
-    fun enforceReadPolicy(atom: Atom) {
+    internal fun enforceReadPolicy(atom: Atom) {
         require(
             (run {
                 when (config.readPolicy) {
@@ -134,9 +135,29 @@ class ReactiveContext(config: ReactiveConfig = ReactiveConfig.main) {
     }
 
     // TODO
-    fun enforceWritePolicy(atom: Atom) {
-        require(isMainThread()) {
+    internal fun enforceWritePolicy(atom: Atom) {
+        require(!config.enforceWriteOnMainThread || isMainThread()) {
             "Observable values cannot be written outside main thread"
+        }
+
+        if (state.computationDepth > 0 && atom.hasObservers) {
+            throw IllegalStateException("Computed values are not allowed to cause side effects by changing observables that are already being observed. Tried to modify: ${atom.name}")
+        }
+
+        when (config.writePolicy) {
+            ReactiveWritePolicy.NEVER -> { }
+            ReactiveWritePolicy.OBSERVED -> {
+                if (atom.hasObservers) {
+                    require(state.isWithinBatch) {
+                        "Changing observable values outside actions is not allowed. Please wrap the code in an \"action\" if this change is intended. Tried to modify ${atom.name}"
+                    }
+                }
+            }
+            ReactiveWritePolicy.ALWAYS -> {
+                require(state.isWithinBatch) {
+                    "Changing observable values outside actions is not allowed. Please wrap the code in an \"action\" if this change is intended. Tried to modify ${atom.name}"
+                }
+            }
         }
     }
 
@@ -224,11 +245,11 @@ class ReactiveContext(config: ReactiveConfig = ReactiveConfig.main) {
         }
     }
 
-    fun addPendingReactions(reaction: Reaction) {
+    internal fun addPendingReactions(reaction: Reaction) {
         state.pendingReactions.add(reaction)
     }
 
-    fun runReactions() {
+    internal fun runReactions() {
         if (state.batch > 0 || state.isRunningReactions) {
             return
         }
@@ -267,7 +288,7 @@ class ReactiveContext(config: ReactiveConfig = ReactiveConfig.main) {
     }
 
 
-    fun propagateChanged(atom: Atom) {
+    internal fun propagateChanged(atom: Atom) {
         if (atom.lowestObserverState == DerivationState.STALE) return
 
         atom.lowestObserverState = DerivationState.STALE
@@ -317,7 +338,7 @@ class ReactiveContext(config: ReactiveConfig = ReactiveConfig.main) {
         derivation.dependenciesState = DerivationState.NOT_TRACKING
     }
 
-    fun enqueueForUnobservation(atom: Atom) {
+    internal fun enqueueForUnobservation(atom: Atom) {
         if (atom.isPendingUnobservation) {
             return
         }
@@ -365,7 +386,7 @@ class ReactiveContext(config: ReactiveConfig = ReactiveConfig.main) {
 
     internal fun hasCaughtException(derivation: Derivation) = derivation.errorValue is MobXException.MobXCaughtException
 
-    fun isComputingDerivation() = state.trackingDerivation != null
+    internal fun isComputingDerivation() = state.trackingDerivation != null
 
     internal fun startUntracked(): Derivation? {
         val prevDerivation = state.trackingDerivation
@@ -386,7 +407,7 @@ class ReactiveContext(config: ReactiveConfig = ReactiveConfig.main) {
         }
     }
 
-    fun onReactionError(handler: ReactionErrorHandler): Dispose {
+    internal fun onReactionError(handler: ReactionErrorHandler): Dispose {
         config.reactionErrorHandlers.add(handler);
         return {
             config.reactionErrorHandlers.remove(handler)
@@ -399,13 +420,13 @@ class ReactiveContext(config: ReactiveConfig = ReactiveConfig.main) {
         }
     }
 
-    fun startAllowStateChanges(allow: Boolean): Boolean {
+    internal fun startAllowStateChanges(allow: Boolean): Boolean {
         val prevValue = state.allowStateChanges
         state.allowStateChanges = allow
         return prevValue
     }
 
-    fun endAllowStateChanges(allow: Boolean) {
+    internal fun endAllowStateChanges(allow: Boolean) {
         state.allowStateChanges = allow
     }
 
@@ -424,7 +445,7 @@ class ReactiveContext(config: ReactiveConfig = ReactiveConfig.main) {
     }
 
     @ThreadLocal
-    companion object {
-        val main: ReactiveContext = ReactiveContext()
+    public companion object {
+        public val main: ReactiveContext = ReactiveContext()
     }
 }

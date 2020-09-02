@@ -1,6 +1,6 @@
 package io.monkeypatch.mobk.core
 
-class Computed<T>(
+public class Computed<T>(
     context: ReactiveContext = ReactiveContext.main,
     name: String = context.nameFor("Computed"),
     private val fn: () -> T
@@ -41,6 +41,7 @@ class Computed<T>(
             throw errorValue!!
         }
 
+        @Suppress("UNCHECKED_CAST")
         return _value as T
     }
 

@@ -6,18 +6,18 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 
-fun autorun(body: () -> Unit): ReactionDisposer =
+public fun autorun(body: () -> Unit): ReactionDisposer =
     createAutorun { body() }
 
-fun action(body: () -> Unit) {
+public fun action(body: () -> Unit) {
     Action(body).runAction()
 }
 
-fun <T> observable(initialValue: T) = ObservableDelegate(initialValue)
+public fun <T> observable(initialValue: T): ReadWriteProperty<Any?, T> = ObservableDelegate(initialValue)
 
-fun <T> computed(body: () -> T) = ComputedDelegate(body)
+public fun <T> computed(body: () -> T): ReadOnlyProperty<Any?, T> = ComputedDelegate(body)
 
-class ObservableDelegate<T>(value: T) : ReadWriteProperty<Any?, T> {
+internal class ObservableDelegate<T>(value: T) : ReadWriteProperty<Any?, T> {
 
     private val observable = Observable(value)
 
@@ -30,7 +30,7 @@ class ObservableDelegate<T>(value: T) : ReadWriteProperty<Any?, T> {
     }
 }
 
-class ComputedDelegate<T>(body: () -> T) : ReadOnlyProperty<Any?, T> {
+internal class ComputedDelegate<T>(body: () -> T) : ReadOnlyProperty<Any?, T> {
 
     private val computed = Computed(fn = body)
 

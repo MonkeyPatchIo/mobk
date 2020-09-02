@@ -1,6 +1,6 @@
 package io.monkeypatch.mobk.core
 
-class Action(
+internal class Action(
     private val body: () -> Unit,
     private val context: ReactiveContext = ReactiveContext.main
 ) {

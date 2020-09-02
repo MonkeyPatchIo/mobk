@@ -1,6 +1,6 @@
 package io.monkeypatch.mobk.core
 
-class Observable<T>(
+public class Observable<T>(
     initialValue: T,
     context: ReactiveContext = ReactiveContext.main,
     name: String = context.nameFor("Observable")

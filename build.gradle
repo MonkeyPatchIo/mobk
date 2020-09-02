@@ -24,7 +24,7 @@ plugins {
 
 apply plugin: 'com.android.library'
 group = "io.monkeypatch"
-version = "0.0.3"
+version = "0.0.4"
 
 repositories {
     google()
@@ -32,6 +32,8 @@ repositories {
 }
 
 kotlin {
+    explicitApi()
+
     android {
         publishLibraryVariants("release", "debug")
     }

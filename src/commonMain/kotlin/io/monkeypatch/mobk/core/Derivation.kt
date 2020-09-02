@@ -1,13 +1,13 @@
 package io.monkeypatch.mobk.core
 
-enum class DerivationState {
+public enum class DerivationState {
     NOT_TRACKING,
     UP_TO_DATE,
     POSSIBLY_STALE,
     STALE
 }
 
-interface Derivation {
+internal interface Derivation {
     val name: String
     var observables: Set<Atom>
     var newObservables: MutableSet<Atom>

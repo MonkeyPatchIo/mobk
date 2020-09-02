@@ -1,15 +1,15 @@
 package io.monkeypatch.mobk.core
 
-typealias ReactionErrorHandler = (error: Throwable, reaction: Reaction) -> Unit
+internal typealias ReactionErrorHandler = (error: Throwable, reaction: Reaction) -> Unit
 
-interface Reaction : Derivation {
+internal interface Reaction : Derivation {
     val isDisposed: Boolean
 
     fun dispose()
     fun runReaction()
 }
 
-class ReactionImpl(
+internal class ReactionImpl(
     private val context: ReactiveContext,
     override val name: String,
     private val onError: ReactionErrorHandler?,
@@ -129,6 +129,4 @@ class ReactionImpl(
 
         context.notifyReactionErrorHandlers(exception, this)
     }
-
-
 }

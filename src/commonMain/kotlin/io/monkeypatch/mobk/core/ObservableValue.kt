@@ -1,5 +1,5 @@
 package io.monkeypatch.mobk.core
 
-interface ObservableValue<out T> {
-    val value: T
+public interface ObservableValue<out T> {
+    public val value: T
 }
