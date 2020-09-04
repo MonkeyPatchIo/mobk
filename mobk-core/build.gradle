@@ -5,7 +5,7 @@ plugins {
 
 apply plugin: 'com.android.library'
 group = "io.monkeypatch"
-version = "0.0.5-SNAPSHOT"
+version = "0.0.5"
 
 kotlin {
     explicitApi()
