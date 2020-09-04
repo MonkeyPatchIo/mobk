@@ -3,3 +3,5 @@
 /build/
 /.gradle/
 /.idea/
+/mobk-compose/build/
+/mobk-core/build/
