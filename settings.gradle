@@ -1,0 +1,3 @@
+rootProject.name = 'mobk'
+enableFeaturePreview('GRADLE_METADATA')
+include ':mobk-core', ':mobk-compose'

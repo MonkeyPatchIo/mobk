@@ -2,7 +2,6 @@ buildscript {
     Properties properties = new Properties()
     properties.load(project.rootProject.file("secret.properties").newDataInputStream())
 
-
     ext {
         bintrayUsername = properties.getProperty("bintrayUsername")
         bintrayPassword = properties.getProperty("bintrayPassword")
@@ -13,72 +12,21 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.1'
+        classpath 'com.android.tools.build:gradle:4.2.0-alpha09'
     }
 }
 
 plugins {
     id 'org.jetbrains.kotlin.multiplatform' version '1.4.0'
-    id 'maven-publish'
 }
 
-apply plugin: 'com.android.library'
-group = "io.monkeypatch"
-version = "0.0.4"
-
-repositories {
-    google()
-    jcenter()
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
 }
 
 kotlin {
-    explicitApi()
-
-    android {
-        publishLibraryVariants("release", "debug")
-    }
-    ios()
-    sourceSets {
-         commonMain {
-            dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
-            }
-        }
-        commonTest {
-            dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
-            }
-        }
-
-        androidTest {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(kotlin("test-junit"))
-            }
-        }
-    }
-}
-
-android {
-    compileSdkVersion(30)
-    defaultConfig {
-        minSdkVersion(21)
-        targetSdkVersion(30)
-    }
-}
-
-publishing {
-    repositories {
-        maven{
-            url = "https://api.bintray.com/maven/alexandre-delattre/MonkeyPatchLibs/mobk/;publish=1"
-            credentials {
-                username bintrayUsername
-                password bintrayPassword
-            }
-            authentication {
-                basic(BasicAuthentication)
-            }
-        }
-    }
+    jvm()
 }

@@ -1,0 +1,57 @@
+plugins {
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'maven-publish'
+}
+
+apply plugin: 'com.android.library'
+group = "io.monkeypatch"
+version = "0.0.5-SNAPSHOT"
+
+kotlin {
+    explicitApi()
+
+    android {
+        publishLibraryVariants("release", "debug")
+    }
+    ios()
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+            }
+        }
+
+        androidTest {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(kotlin("test-junit"))
+            }
+        }
+    }
+}
+
+android {
+    compileSdkVersion(30)
+    defaultConfig {
+        minSdkVersion(21)
+        targetSdkVersion(30)
+    }
+}
+
+publishing {
+    repositories {
+        maven{
+            url = "https://api.bintray.com/maven/alexandre-delattre/MonkeyPatchLibs/mobk-core/;publish=1"
+            credentials {
+                username bintrayUsername
+                password bintrayPassword
+            }
+        }
+    }
+}
