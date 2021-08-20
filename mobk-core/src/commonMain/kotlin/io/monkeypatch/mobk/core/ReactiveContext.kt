@@ -311,7 +311,6 @@ public class ReactiveContext(config: ReactiveConfig = ReactiveConfig.main) {
                 obs.dependenciesState = DerivationState.POSSIBLY_STALE
                 obs.onBecomeStale()
             }
-            obs.dependenciesState = DerivationState.STALE
         }
     }
 

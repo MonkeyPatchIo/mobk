@@ -6,7 +6,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 group "io.monkeypatch"
-version "0.0.5"
+version "0.0.9"
 
 android {
     compileSdkVersion(30)
@@ -23,7 +23,8 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0-alpha02"
+        kotlinCompilerExtensionVersion "1.0.1"
+        kotlinCompilerVersion "1.5.21"
     }
 
     kotlinOptions {
@@ -35,7 +36,7 @@ android {
 
 dependencies {
     implementation project(":mobk-core")
-    implementation "androidx.compose.ui:ui:1.0.0-alpha02"
+    implementation "androidx.compose.ui:ui:1.0.1"
 }
 
 publishing {

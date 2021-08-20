@@ -1,10 +1,16 @@
 package io.monkeypatch.mobk.core
 
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 
 class TestReactiveContext {
+
+    @BeforeTest
+    fun setupContext() {
+        ReactiveContext.main.config = ReactiveContext.main.config.copy(enforceWriteOnMainThread = false)
+    }
 
     @Test
     fun testObservables() {
@@ -65,5 +71,29 @@ class TestReactiveContext {
             ),
             values
         )
+    }
+
+    @Test
+    fun testComputedOptimization() {
+        val x = Observable(10)
+        val isPair = Computed { x.value % 2 == 0 }
+
+        val xHistory = mutableListOf<Int>()
+        val isPairHistory = mutableListOf<Boolean>()
+
+        createAutorun {
+            xHistory.add(x.value)
+        }
+
+        createAutorun {
+            isPairHistory.add(isPair.value)
+        }
+
+        x.value = 11
+        x.value = 12
+        x.value = 20
+
+        assertEquals(listOf(10, 11, 12, 20), xHistory)
+        assertEquals(listOf(true, false, true), isPairHistory)
     }
 }

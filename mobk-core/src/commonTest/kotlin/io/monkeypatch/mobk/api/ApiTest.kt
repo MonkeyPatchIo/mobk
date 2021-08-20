@@ -1,9 +1,15 @@
 package io.monkeypatch.mobk.api
 
+import io.monkeypatch.mobk.core.ReactiveContext
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 
 class ApiTest {
+    @BeforeTest
+    fun setupContext() {
+        ReactiveContext.main.config = ReactiveContext.main.config.copy(enforceWriteOnMainThread = false)
+    }
 
     @Test
     fun simpleTest() {

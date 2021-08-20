@@ -9,7 +9,7 @@ data class Render(val composable: (@Composable () -> Unit))
 fun Observer(observe: () -> Render) {
     val (state, setState) = remember { mutableStateOf<Render?>(null) }
 
-    onCommit(observe) {
+    DisposableEffect(observe) {
         val disposer = autorun {
             val render = observe()
             setState(render)
