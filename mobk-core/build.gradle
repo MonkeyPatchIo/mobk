@@ -5,7 +5,7 @@ plugins {
 
 apply plugin: 'com.android.library'
 group = "io.monkeypatch"
-version = "0.0.9"
+version = "0.0.10"
 
 kotlin {
     explicitApi()
@@ -13,7 +13,8 @@ kotlin {
     android {
         publishLibraryVariants("release", "debug")
     }
-    ios()
+    iosX64("ios")
+    iosArm64()
     sourceSets {
         commonMain {
             dependencies {
@@ -32,6 +33,11 @@ kotlin {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
             }
+        }
+        iosMain {
+        }
+        iosArm64Main {
+            dependsOn iosMain
         }
     }
 }

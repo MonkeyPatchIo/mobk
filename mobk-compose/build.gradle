@@ -6,13 +6,13 @@ apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 group "io.monkeypatch"
-version "0.0.9"
+version "0.0..10"
 
 android {
-    compileSdkVersion(30)
+    compileSdkVersion(31)
     defaultConfig {
         minSdkVersion(24)
-        targetSdkVersion(30)
+        targetSdkVersion(31)
     }
     buildFeatures {
         compose = true
@@ -23,12 +23,11 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion "1.0.1"
-        kotlinCompilerVersion "1.5.21"
+        kotlinCompilerExtensionVersion "1.0.4"
+        kotlinCompilerVersion "1.5.31"
     }
 
     kotlinOptions {
-
         jvmTarget = "1.8"
         useIR = true
     }
@@ -36,7 +35,7 @@ android {
 
 dependencies {
     implementation project(":mobk-core")
-    implementation "androidx.compose.ui:ui:1.0.1"
+    implementation "androidx.compose.ui:ui:1.0.4"
 }
 
 publishing {
