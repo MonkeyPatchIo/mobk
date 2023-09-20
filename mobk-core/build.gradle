@@ -55,3 +55,7 @@ publishing {
         }
     }
 }
+
+dependencies {
+    implementation 'androidx.core:core-ktx:+'
+}

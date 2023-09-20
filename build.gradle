@@ -6,13 +6,16 @@ buildscript {
         bintrayUsername = properties.getProperty("bintrayUsername")
         bintrayPassword = properties.getProperty("bintrayPassword")
         coroutines_version = "1.5.1-native-mt"
+        kotlin_version = '1.9.10'
     }
     repositories {
         google()
+        mavenCentral()
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:7.0.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 

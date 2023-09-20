@@ -30,13 +30,13 @@ android {
     kotlinOptions {
 
         jvmTarget = "1.8"
-        useIR = true
     }
 }
 
 dependencies {
     implementation project(":mobk-core")
     implementation "androidx.compose.ui:ui:1.0.1"
+    implementation 'androidx.core:core-ktx:+'
 }
 
 publishing {
