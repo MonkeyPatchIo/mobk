@@ -1,7 +1,7 @@
 /secret.properties
 /local.properties
-/build/
 /.gradle/
 /.idea/
 /mobk-compose/build/
 /mobk-core/build/
+build/

@@ -7,7 +7,7 @@ public enum class DerivationState {
     STALE
 }
 
-internal interface Derivation {
+ interface Derivation {
     val name: String
     var observables: Set<Atom>
     var newObservables: MutableSet<Atom>

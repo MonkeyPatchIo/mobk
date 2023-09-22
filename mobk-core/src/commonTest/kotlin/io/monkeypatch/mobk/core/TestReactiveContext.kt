@@ -96,4 +96,63 @@ class TestReactiveContext {
         assertEquals(listOf(10, 11, 12, 20), xHistory)
         assertEquals(listOf(true, false, true), isPairHistory)
     }
+
+    @Test
+    fun testReaction() {
+        val x = Observable(10)
+        val isPair = Computed { x.value % 2 == 0 }
+
+        val xHistory = mutableListOf<Int>()
+        var pairCounter = 1
+
+        createAutorun {
+            xHistory.add(x.value)
+        }
+
+        createReaction (
+            trackingFn = {
+                isPair.value
+            }
+        ) { value ->
+            value?.let {
+                pairCounter++
+            }
+        }
+
+        x.value = 11
+        x.value = 12
+        x.value = 20
+
+        assertEquals(listOf(10, 11, 12, 20), xHistory)
+        assertEquals(3, pairCounter)
+    }
+
+    @Test
+    fun testWhenReaction() {
+        val x = Observable(10)
+
+        val xHistory = mutableListOf<Int>()
+        var isTwelve = 0
+
+        createAutorun {
+            xHistory.add(x.value)
+        }
+
+        createWhenReaction (
+            predicate = {
+                x.value == 12
+            }
+        ) {
+                isTwelve++
+        }
+
+        x.value = 11
+        x.value = 12
+        x.value = 20
+        x.value= 12
+        x.value = 24
+
+        assertEquals(listOf(10, 11, 12, 20,12,24), xHistory)
+        assertEquals(1, isTwelve)
+    }
 }
