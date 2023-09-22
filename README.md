@@ -68,7 +68,7 @@ kotlin {
 
 ### SwiftUI ###
 
-You need add the following file [Observer.kt](./mobk-swift/Observer.kt) to your
+You need add the following file [Observer.swift](./mobk-swift/Observer.swift) to your
 Xcode project. Be sure to replace the import line with the name of your Kotlin
 framework.
 

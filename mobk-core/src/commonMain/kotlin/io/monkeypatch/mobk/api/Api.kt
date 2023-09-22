@@ -4,6 +4,7 @@ import io.monkeypatch.mobk.core.*
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+import kotlin.time.Duration
 
 
 public fun autorun(body: () -> Unit): ReactionDisposer =
@@ -12,6 +13,23 @@ public fun autorun(body: () -> Unit): ReactionDisposer =
 public fun action(body: () -> Unit) {
     Action(body).runAction()
 }
+
+public fun <T> reaction(context: ReactiveContext = ReactiveContext.main,
+                        delay: Duration? = null,
+                        equals: ((T?, T?) -> Boolean)? = null,
+                        onError: ReactionErrorHandler? = null,trackingFn: (Reaction) -> T, effect: (T?) -> Unit): ReactionDisposer =
+    createReaction(
+        context = context,
+        delay = delay,
+        equals = equals,
+        onError = onError,
+        trackingFn = trackingFn, effect = effect)
+
+public fun whenReaction(context: ReactiveContext = ReactiveContext.main,
+                            timeout: Duration? = null,
+                            onError: ReactionErrorHandler? = null,
+                            predicate: (Reaction) -> Boolean,
+                            effect: () -> Unit) = createWhenReaction(context = context, timeout = timeout, onError = onError, predicate = predicate, effect = effect)
 
 public fun <T> observable(initialValue: T): ReadWriteProperty<Any?, T> = ObservableDelegate(initialValue)
 
