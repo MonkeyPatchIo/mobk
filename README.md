@@ -133,3 +133,108 @@ Observer {
     }
 }
 ```
+
+### MobK ViewModel ###
+
+#### Dependency ####
+Add the mobk-viewmodel dependency to your commonMain dependencies :
+
+``` gradle
+kotlin {
+    ...
+    sourceSets {
+        commonMain {
+            dependencies {
+                ...
+                api "io.monkeypatch:mobk-viewmodel:$mobk_version"
+            }
+        }
+```   
+
+#### Usage ####
+
+The ViewModel class is a simple class that can be used to store state and logic for your application.
+It is designed to be used with SwiftUI and Jetpack Compose, but can be used with any UI toolkit.
+
+It provides reactions, that respect lifecycle of the ViewModel, and can be used to perform side effects.
+
+``` kotlin
+class CounterViewModel: MobKViewModel {
+    var counter by observable(0)
+
+    val counterWatch = reaction(
+        delay = 5.seconds,
+        trackingFn = { counter }) { counter ->
+        if (counter != null && counter > 10) {
+            message = "Counter is too high"
+        }
+    }
+
+    val warningWatch = whenReaction(predicate = { counter > 12 }) {
+        message = "Counter is really too high"
+    }
+
+    fun increment() {
+        counter++
+    }
+    
+    @override
+    fun onCleared() {
+       super.onCleared()
+         // Do some cleanup here
+    }
+}
+```
+
+#### SwiftUI ####
+
+You need add the following file [MobKViewModel.swift](./mobk-swift/MobKViewModel.swift) to your Xcode project. Be sure to replace the import line with the name of your Kotlin framework.
+
+After that, you can use the @VM property wrapper to manage the lifecycle of your ViewModel. When component is destroyed, the ViewModel will be cleared. 
+Usually, you may also use the @StateObject property wrapper to manage the persistence of your ViewModel.
+
+``` swift
+struct ContentView: View {
+   @StateObject @VM var counterViewModel: CounterViewModel = CounterViewModel()
+    
+    var body: some View {
+        VStack {
+            Text(verbatim: self.counterViewModel.counter)
+            
+            HStack {
+                Button(action: {
+                    self.counterViewModel.increment()
+                }) {
+                    Text("Increment")
+                }
+            }
+        }
+    }
+}
+```
+
+If your view model has a dependency on a parameter, you have to use the following syntax:
+
+``` swift
+struct ContentView: View {
+   @StateObject @VM var counterViewModel: CounterViewModel
+    
+    init(counter: Int) {
+        _counterViewModel = asStateObject(CounterViewModel(counter: counter))
+    }
+    
+    var body: some View {
+        VStack {
+            Text(verbatim: self.counterViewModel.counter)
+            
+            HStack {
+                Button(action: {
+                    self.counterViewModel.increment()
+                }) {
+                    Text("Increment")
+                }
+            }
+        }
+    }
+}
+```

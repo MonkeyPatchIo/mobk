@@ -1,6 +1,8 @@
 package io.monkeypatch.mobk.core
 
 import io.monkeypatch.mobk.utils.isMainThread
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlin.native.concurrent.ThreadLocal
 import kotlin.properties.Delegates
 
@@ -59,7 +61,8 @@ public data class ReactiveConfig(
     val writePolicy: ReactiveWritePolicy,
     val readPolicy: ReactiveReadPolicy,
     val maxIterations: Int = 100,
-    val enforceWriteOnMainThread: Boolean = true
+    val enforceWriteOnMainThread: Boolean = true,
+    val reactionCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 ) {
     internal val reactionErrorHandlers: MutableSet<ReactionErrorHandler> = mutableSetOf()
 

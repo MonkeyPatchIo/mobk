@@ -8,4 +8,6 @@ public sealed class MobXException(message: String): Exception(message) {
 
     /// This captures the stack trace when user-land code throws an exception
     public class MobXCaughtException(public val exception: Throwable): MobXException("MobXCaughtException: $exception")
+
+    public class MobXTimeoutException(message: String): MobXException(message)
 }

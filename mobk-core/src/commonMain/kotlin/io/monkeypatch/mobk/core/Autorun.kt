@@ -1,14 +1,5 @@
 package io.monkeypatch.mobk.core
 
-public interface ReactionDisposer {
-    public operator fun invoke()
-}
-
-internal data class ReactionDisposerImpl(private val reaction: Reaction): ReactionDisposer {
-    override operator fun invoke() {
-        reaction.dispose()
-    }
-}
 
 internal fun createAutorun(
     context: ReactiveContext = ReactiveContext.main,

@@ -1,8 +1,8 @@
 package io.monkeypatch.mobk.core
 
-internal typealias ReactionErrorHandler = (error: Throwable, reaction: Reaction) -> Unit
+ typealias ReactionErrorHandler = (error: Throwable, reaction: Reaction) -> Unit
 
-internal interface Reaction : Derivation {
+ interface Reaction : Derivation {
     val isDisposed: Boolean
 
     fun dispose()
